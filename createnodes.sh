@@ -184,6 +184,21 @@ while getopts ":hf:d:s:m:" FLAG; do
         esac
 done
 if [ -z "${RIF}"  ] && [ -z "${MMAN}" ] ; then
+
+#######################################################
+echo "Warning...... This will write blank nodes to all 24 ssc-clients "
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) echo "[OK]"; break;;
+        No ) exit;;
+    esac
+done
+
+
+
+
+
+########################################################
 for  i in {1..24} 
  do
    sname=$(echo -n "ssc${i}")
