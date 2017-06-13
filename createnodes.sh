@@ -99,7 +99,6 @@ echo  "" > ${tmp1} && echo -n "" > ${tmp2}
 echo ${C50} >> ${tmp1}
 for lines in ${FIN[@]}
 do 
-#  echo "lines=$lines"
   IFS=,
   for z in $lines
    do
@@ -152,7 +151,6 @@ case "$1" in
 esac
 }
 #################################################
-#################################################
 #################### MAIN #######################
 #################################################
 echo -n "" > ${tmp1} && echo -n "" > ${tmp2} && echo -n > ${tmp3}
@@ -184,7 +182,6 @@ while getopts ":hf:d:s:m:" FLAG; do
         esac
 done
 if [ -z "${RIF}"  ] && [ -z "${MMAN}" ] ; then
-
 #######################################################
 echo "Warning...... This will write blank nodes to all 24 ssc-clients "
 select yn in "Yes" "No"; do
@@ -193,19 +190,14 @@ select yn in "Yes" "No"; do
         No ) exit;;
     esac
 done
-
-
-
-
-
 ########################################################
-for  i in {1..24} 
+for  i in {1..24} # 24 ssc clients
  do
-   sname=$(echo -n "ssc${i}")
+    sname=$(echo -n "ssc${i}")
     crnode "${sname}.ssc.jsl.nasa.gov"
-#   crnode "${sname}.ssc.jsl.nasa.gov" "include roles::alextest1" "include testmod" 
  done
 destination client
 fi # end of RIF
-#crnode "ssc1.ssc.jsl.nasa.gov" "include roles::alextest1" "include testmod" "include terrymod" "include alexmod"dd
-#################################################
+#######################################################
+###################### END ############################
+#######################################################
