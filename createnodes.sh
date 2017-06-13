@@ -29,13 +29,17 @@ echo " Example file contents , comma delimted: arg1 FQDN,arg2-10 puppet manifest
 echo "ssc1.ssc.jsl.nasa.gov,include jalapeno::alextest1,include testmod "
 echo "ssc2.ssc.jsl.nasa.gov,include jalapeno::alextest2,include testmod "
 echo "ssc3.ssc.jsl.nasa.gov,include jalapeno::alextest3,include testmod "
+echo " example:"
+echo "./createnode.sh -d client -f /tmp/newfile.txt"
 echo ${C50}
 echo " -d [client|pluto] destination-file required with -f , -m and no args "
 echo " -d has one time backup of last version   "
 echo " -s [client|pluto] will display the configuration file on the screen "
+echo ${C50}
 echo " -m  manual mode one server ssc1.ssc.jsl.nasa.gov,include jalapeno::alextest1,include testmod "
-echo " NO ARGS  Runs default of nothing in all 23 ssc clients"
-echo " NO ARGS  /tmp/tmp3.txt is the output you need         "
+echo " example:"
+echo " ./createnode.sh -d pluto -m ssc-pluto.ssc.jsl.nasa.gov,include jalapeno::imsclient "
+echo " NO ARGS prompts and  Runs default of nothing in all 23 ssc clients"
 }
 #################################################
 function destination {
