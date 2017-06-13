@@ -184,9 +184,10 @@ done
 if [ -z "${RIF}"  ] && [ -z "${MMAN}" ] ; then
 #######################################################
 echo "Warning...... This will write blank nodes to all 24 ssc-clients "
-select yn in "Yes" "No"; do
+select yn in "Yes" "No" "Help"; do
     case $yn in
         Yes ) echo "[OK]"; break;;
+        Help ) helpme ; exit ;;
         No ) exit;;
     esac
 done
