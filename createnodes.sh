@@ -13,7 +13,7 @@ IFS="
 C50="#################################################"
 nodef1=$(mktemp)          # helps build final nodef3
 nodef2=$(mktemp)          # helps build final nodef3
-nodef3=$(mktemp)          # Final node file 
+finalnodefile=$(mktemp)         # Final node file 
 FIN=""                          # file variable
 FINMAX=0                        # file lines total
 DF=""                           # destination file
@@ -67,7 +67,7 @@ esac
 #
 if [ -f ${TFILE} ]; then
    cp -f ${TFILE} ${TFILE}.last
-   cp -f ${nodef3} ${TFILE} && chmod 777 ${TFILE}
+   cp -f ${finalnodefile} ${TFILE} && chmod 777 ${TFILE}
    echo "Update ${TFILE#} Complete..."
 else
   echo "I can not find path/file ${NPATH}/${TFILE} exiting.........." && exit 1
@@ -100,8 +100,8 @@ do
  fi 
 done
 echo "}" >> ${nodef2}
-cat ${nodef1} >> ${nodef3}
-cat ${nodef2} >> ${nodef3}
+cat ${nodef1} >> ${finalnodefile}
+cat ${nodef2} >> ${finalnodefile}
 }
 #################################################
 function crnodeFIN {
@@ -120,8 +120,8 @@ do
       fi 
   done
 echo "}" >> ${nodef2}
-cat ${nodef1} >> ${nodef3}
-cat ${nodef2} >> ${nodef3}
+cat ${nodef1} >> ${finalnodefile}
+cat ${nodef2} >> ${finalnodefile}
 echo -n "" > ${tmp1} && echo -n "" > ${nodef2} 
 echo ${C50} >> ${nodef1}
 done
@@ -143,8 +143,8 @@ IFS=,
       fi 
   done
 echo "}" >> ${nodef2}
-cat ${nodef1} >> ${nodef3}
-cat ${nodef2} >> ${nodef3}
+cat ${nodef1} >> ${finalnodefile}
+cat ${nodef2} >> ${finalnodefile}
 echo -n "" > ${nodef1} && echo -n "" > ${nodef2} 
 echo ${C50} >> ${nodef1}
 }
@@ -166,7 +166,7 @@ esac
 #################################################
 #################### MAIN #######################
 #################################################
-echo -n "" > ${nodef1} && echo -n "" > ${nodef2} && echo -n > ${nodef3}
+echo -n "" > ${nodef1} && echo -n "" > ${nodef2} && echo -n > ${finalnodefile}
 while getopts ":hf:d:s:m:" FLAG; do
         case "${FLAG}" in 
              h) # help
