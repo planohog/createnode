@@ -11,14 +11,24 @@ IFSORIG=$IFS
 IFS="
 "
 C50="#################################################"
-nodef1="/tmp/tmp1.txt"          # helps build final nodef3
-nodef2="/tmp/tmp2.txt"          # helps build final nodef3
-nodef3="/tmp/tmp3.txt"          # Final node file 
+nodef1=$(mktemp)          # helps build final nodef3
+nodef2=$(mktemp)          # helps build final nodef3
+nodef3=$(mktemp)          # Final node file 
 FIN=""                          # file variable
 FINMAX=0                        # file lines total
 DF=""                           # destination file
 MMAN=""                         # manual mode variable
 SHN=""                          # show nodes variable
+NPATH="/etc/puppet/manifests/nodes" # path node files
+#################################################
+#       Function name and description           
+# helpme:        Display a help menu            
+# destination:   Selects client or pluto node file
+# readinfile:    Used with -f switch to supply node info
+# isnasa:        Used to grep for nasa.gov in node string
+# crnode:        Used to create empty node file for 24 clients
+# crnodeFIN:     Used to create node file with -f -d option  
+# mannode:       Used to create node file with -m -d option
 #################################################
 function helpme {
 echo ${C50}
@@ -43,26 +53,24 @@ echo " NO ARGS prompts and  Runs default of nothing in all 23 ssc clients"
 }
 #################################################
 function destination {
-NODE=$1
-TFIL1=""
 case "$1" in
        client)
-          TFILE="/etc/puppet/manifests/nodes/ssc-client_node.pp"
+          TFILE="${NPATH}/ssc-client_node.pp"
            ;;
        pluto)
-          TFILE="/etc/puppet/manifests/nodes/ssc-pluto_node.pp"
+          TFILE="${NPATH}/ssc-pluto_node.pp"
           ;;
        *)
-          echo "client or pluto options destination function failed [$NODE]"
+          echo "client or pluto option only!  function=destination failed [$1]"
           exit 1
 esac
-DF=$TFILE
-if [ -f ${DF} ]; then
-   cp -f ${DF} ${DF}.last
-   cp -f /tmp/tmp3.txt ${DF} && chmod 777 ${DF}
-   echo "Update ${DF} Complete..."
+#
+if [ -f ${TFILE} ]; then
+   cp -f ${TFILE} ${TFILE}.last
+   cp -f ${nodef3} ${TFILE} && chmod 777 ${TFILE}
+   echo "Update ${TFILE#} Complete..."
 else
-  echo "I can not find path/file ${DF} exiting.........." && exit 1
+  echo "I can not find path/file ${NPATH}/${TFILE} exiting.........." && exit 1
 fi 
 }
 #################################################
@@ -81,7 +89,6 @@ echo $ISIT
 }
 #################################################
 function crnode {
-#echo "[CRNODE $1, $2, $3, $4, $5,]"
 echo  "" > ${nodef1} && echo -n "" > ${nodef2} 
 echo ${C50} >> ${nodef1}
 for i in "$@"
@@ -122,9 +129,11 @@ done
 #################################################
 function mannode {
 INP=$1
+[ -z ${INP} ] && echo "No Input -m manual mode , exiting ...." && exit 1
+[ -z ${DST} ] && echo "No Destination -d selected , exiting ...." && exit 1
 echo  "" > ${nodef1} && echo -n "" > ${nodef2} 
 echo ${C50} >> ${nodef1}
-  IFS=,
+IFS=,
   for y in $INP
    do
       if [ $(isnasa "$y") -gt 0  ]; then
@@ -150,7 +159,7 @@ case "$1" in
           cat /etc/puppet/manifests/nodes/ssc-pluto_node.pp
           ;;
        *)
-          echo "client or pluto options  chknodes function failed [$NODE]"
+          echo "client or pluto options only!!  chknodes function fail [$NODE]"
           exit 1
 esac
 }
