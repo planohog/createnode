@@ -3,7 +3,8 @@
 #################################################
 # create nodes
 # designed to help create puppet manifests
-# June 14  SGT-IMOC-II
+# June 14 2017 SGT-IMOC-II
+# ver 02
 #################################################
 #################################################
 # capturing original file seperator and loading \n
@@ -48,7 +49,7 @@ echo " -s [client|pluto] will display the configuration file on the screen "
 echo ${C50}
 echo " -m  manual mode one server ssc1.ssc.jsl.nasa.gov,include jalapeno::alextest1,include testmod "
 echo " example:"
-echo " ./createnode.sh -d pluto -m ssc-pluto.ssc.jsl.nasa.gov,include jalapeno::imsclient "
+echo " ./createnode.sh -d pluto -m \"ssc-pluto.ssc.jsl.nasa.gov\",\"include jalapeno::imsclient\" "
 echo " NO ARGS prompts and  Runs default of nothing in all 23 ssc clients"
 }
 #################################################
@@ -68,7 +69,6 @@ esac
 if [ -f ${TFILE} ]; then
    cp -f ${TFILE} ${TFILE}.last
    cp -f ${finalnodefile} ${TFILE} && chmod 777 ${TFILE}
-   echo "Update ${TFILE#} Complete..."
 else
   echo "I can not find path/file ${NPATH}/${TFILE} exiting.........." && exit 1
 fi 
@@ -122,8 +122,9 @@ do
 echo "}" >> ${nodef2}
 cat ${nodef1} >> ${finalnodefile}
 cat ${nodef2} >> ${finalnodefile}
-echo -n "" > ${tmp1} && echo -n "" > ${nodef2} 
-echo ${C50} >> ${nodef1}
+echo -n "" > ${nodef1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${finalnodefile}
+destination ${DST}
 done
 }
 #################################################
@@ -146,17 +147,22 @@ echo "}" >> ${nodef2}
 cat ${nodef1} >> ${finalnodefile}
 cat ${nodef2} >> ${finalnodefile}
 echo -n "" > ${nodef1} && echo -n "" > ${nodef2} 
-echo ${C50} >> ${nodef1}
+echo ${C50} >> ${finalnodefile}
+destination ${DST}
 }
 #################################################
 function chknodes {
 NODE=$1
-case "$1" in
+case "${NODE}" in
        client)
-          cat /etc/puppet/manifests/nodes/ssc-client_node.pp
+        if [ ! -s ${NPATH}/ssc-client_node.pp ]; then echo "${NPATH}/ssc-client_node.pp EMPTY"; else
+          cat ${NPATH}/ssc-client_node.pp
+        fi
            ;;
        pluto)
-          cat /etc/puppet/manifests/nodes/ssc-pluto_node.pp
+        if [ ! -s ${NPATH}/ssc-pluto_node.pp ]; then echo "${NPATH}/ssc-pluto_node.pp  EMPTY"; else
+          cat ${NPATH}/ssc-pluto_node.pp
+        fi
           ;;
        *)
           echo "client or pluto options only!!  chknodes function fail [$NODE]"
@@ -190,11 +196,11 @@ while getopts ":hf:d:s:m:" FLAG; do
                 MMAN="${OPTARG}"
                 mannode ${MMAN}
                ;; 
-            \?) ;;
-             :) ;;
+            \?) echo "Un-Known Option, Thanks for Playing "; sleep 2 ; helpme; exit 1 ;;
+             :)  ;;
         esac
 done
-if [ -z "${RIF}"  ] && [ -z "${MMAN}" ] ; then
+if [ -z "${RIF}"  ] && [ -z "${MMAN}" ] && [ -z "${SHN}" ] ; then
 #######################################################
 echo "Warning...... This will write blank nodes to all 24 ssc-clients "
 select yn in "Yes" "No" "Help"; do
