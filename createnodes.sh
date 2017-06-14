@@ -3,22 +3,22 @@
 #################################################
 # create nodes
 # designed to help create puppet manifests
-# May 31 2017  SGT-IMOC-II
+# June 14  SGT-IMOC-II
 #################################################
 #################################################
-#
+# capturing original file seperator and loading \n
 IFSORIG=$IFS
 IFS="
 "
 C50="#################################################"
-tmp1="/tmp/tmp1.txt"
-tmp2="/tmp/tmp2.txt"           # temp file
-tmp3="/tmp/tmp3.txt"           # usable output
-FIN=""                         # file variable
-FINMAX=0                       # file lines total
-DF=""                          # destination file
-MMAN=""
-SHN=""                         # node for shownodes
+nodef1="/tmp/tmp1.txt"          # helps build final nodef3
+nodef2="/tmp/tmp2.txt"          # helps build final nodef3
+nodef3="/tmp/tmp3.txt"          # Final node file 
+FIN=""                          # file variable
+FINMAX=0                        # file lines total
+DF=""                           # destination file
+MMAN=""                         # manual mode variable
+SHN=""                          # show nodes variable
 #################################################
 function helpme {
 echo ${C50}
@@ -82,62 +82,62 @@ echo $ISIT
 #################################################
 function crnode {
 #echo "[CRNODE $1, $2, $3, $4, $5,]"
-echo  "" > ${tmp1} && echo -n "" > ${tmp2} 
-echo ${C50} >> ${tmp1}
+echo  "" > ${nodef1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${nodef1}
 for i in "$@"
 do
  if [ $(isnasa $i) -gt 0  ]; then
-    echo  "node '$1' {" >> ${tmp1}
+    echo  "node '$1' {" >> ${nodef1}
  else
-    echo  " $i" >> ${tmp2}
+    echo  " $i" >> ${nodef2}
  fi 
 done
-echo "}" >> ${tmp2}
-cat ${tmp1} >> ${tmp3}
-cat ${tmp2} >> ${tmp3}
+echo "}" >> ${nodef2}
+cat ${nodef1} >> ${nodef3}
+cat ${nodef2} >> ${nodef3}
 }
 #################################################
 function crnodeFIN {
 IFS=$IFS
-echo  "" > ${tmp1} && echo -n "" > ${tmp2} 
-echo ${C50} >> ${tmp1}
+echo  "" > ${nodef1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${nodef1}
 for lines in ${FIN[@]}
 do 
   IFS=,
   for z in $lines
    do
       if [ $(isnasa "$z") -gt 0  ]; then
-         echo  "node '$z' {" >> ${tmp1}
+         echo  "node '$z' {" >> ${nodef1}
       else
-         echo  " $z" >> ${tmp2}
+         echo  " $z" >> ${nodef2}
       fi 
   done
-echo "}" >> ${tmp2}
-cat ${tmp1} >> ${tmp3}
-cat ${tmp2} >> ${tmp3}
-echo -n "" > ${tmp1} && echo -n "" > ${tmp2} 
-echo ${C50} >> ${tmp1}
+echo "}" >> ${nodef2}
+cat ${nodef1} >> ${nodef3}
+cat ${nodef2} >> ${nodef3}
+echo -n "" > ${tmp1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${nodef1}
 done
 }
 #################################################
 function mannode {
 INP=$1
-echo  "" > ${tmp1} && echo -n "" > ${tmp2} 
-echo ${C50} >> ${tmp1}
+echo  "" > ${nodef1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${nodef1}
   IFS=,
   for y in $INP
    do
       if [ $(isnasa "$y") -gt 0  ]; then
-         echo  "node '$y' {" >> ${tmp1}
+         echo  "node '$y' {" >> ${nodef1}
       else
-         echo  " $y" >> ${tmp2}
+         echo  " $y" >> ${nodef2}
       fi 
   done
-echo "}" >> ${tmp2}
-cat ${tmp1} >> ${tmp3}
-cat ${tmp2} >> ${tmp3}
-echo -n "" > ${tmp1} && echo -n "" > ${tmp2} 
-echo ${C50} >> ${tmp1}
+echo "}" >> ${nodef2}
+cat ${nodef1} >> ${nodef3}
+cat ${nodef2} >> ${nodef3}
+echo -n "" > ${nodef1} && echo -n "" > ${nodef2} 
+echo ${C50} >> ${nodef1}
 }
 #################################################
 function chknodes {
@@ -157,7 +157,7 @@ esac
 #################################################
 #################### MAIN #######################
 #################################################
-echo -n "" > ${tmp1} && echo -n "" > ${tmp2} && echo -n > ${tmp3}
+echo -n "" > ${nodef1} && echo -n "" > ${nodef2} && echo -n > ${nodef3}
 while getopts ":hf:d:s:m:" FLAG; do
         case "${FLAG}" in 
              h) # help
